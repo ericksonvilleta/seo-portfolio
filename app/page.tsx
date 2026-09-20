@@ -167,3 +167,4 @@ export default async function ShippingPage({ params }: PageProps) {
     </main>
   );
 }
+export const dynamicParams = true; // Allows routes not pre-rendered at build time to be generated on-demand
