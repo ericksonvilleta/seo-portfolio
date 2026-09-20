@@ -6,11 +6,13 @@ export interface FAQ {
 export interface LocationData {
   slug: string;
   origin: string;
+  city: string;
   state: string;
   population: number;
   corridor: string;
   baseRate: number;
   leadTime: string;
+  popularRoute: string;
   faqs: FAQ[];
 }
 
@@ -58,11 +60,13 @@ export function getAllLocations(): LocationData[] {
       baseLocations.push({
         slug,
         origin: originName,
+        city: city.name,
         state: state.name,
         population: city.pop + index * 1000,
         corridor: state.corridor,
         baseRate: baseRateVal,
         leadTime: leadTimeVal,
+        popularRoute: `${city.name} to Miami`,
         faqs,
       });
     });
@@ -93,11 +97,13 @@ export function getAllLocations(): LocationData[] {
       expandedLocations.push({
         slug: expandedSlug,
         origin: loc.origin,
+        city: loc.city,
         state: loc.state,
         population: loc.population + i * 123,
         corridor: loc.corridor,
         baseRate: newRate,
         leadTime: newLead,
+        popularRoute: loc.popularRoute,
         faqs: expandedFaqs,
       });
     });
@@ -111,7 +117,7 @@ export function getLocationBySlug(slug: string): LocationData | undefined {
   return locations.find((loc) => loc.slug === slug);
 }
 
-export function getRelatedLocations(currentState: string, currentSlug: string, limit = 5): LocationData[] {
+tr: export function getRelatedLocations(currentState: string, currentSlug: string, limit = 5): LocationData[] {
   const locations = getAllLocations();
   return locations
     .filter((loc) => loc.state === currentState && loc.slug !== currentSlug)
