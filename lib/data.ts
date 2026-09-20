@@ -29,16 +29,16 @@ const baseCities = [
 ];
 
 export function getAllLocations(): LocationData[] {
-  const locations: LocationData[] = [];
+  const baseLocations: LocationData[] = [];
   
   states.forEach((state) => {
     baseCities.forEach((city, index) => {
-      const citySlug = city.name.toLowerCase().replace(/\s+/g, '-');
       const stateSlug = state.name.toLowerCase().replace(/\s+/g, '-');
+      const citySlug = city.name.toLowerCase().replace(/\s+/g, '-');
       const slug = `${stateSlug}-${citySlug}-to-miami`;
       const baseRateVal = 950 + (index * 75);
       const leadTimeVal = '24–48 Hours';
-      const originName = `${state.name} ${city.name}`;
+      const originName = `${city.name}, ${state.name}`;
       
       const faqs: FAQ[] = [
         {
@@ -55,7 +55,7 @@ export function getAllLocations(): LocationData[] {
         }
       ];
 
-      locations.push({
+      baseLocations.push({
         slug,
         origin: originName,
         state: state.name,
@@ -70,7 +70,7 @@ export function getAllLocations(): LocationData[] {
 
   const expandedLocations: LocationData[] = [];
   for (let i = 0; i < 75; i++) {
-    locations.forEach((loc, idx) => {
+    baseLocations.forEach((loc, idx) => {
       const newRate = 900 + ((i + idx) % 350);
       const newLead = i % 2 === 0 ? '12–24 Hours' : '24–48 Hours';
       const expandedSlug = `${loc.slug}-${i}`;
@@ -91,9 +91,11 @@ export function getAllLocations(): LocationData[] {
       ];
 
       expandedLocations.push({
-        ...loc,
         slug: expandedSlug,
+        origin: loc.origin,
+        state: loc.state,
         population: loc.population + i * 123,
+        corridor: loc.corridor,
         baseRate: newRate,
         leadTime: newLead,
         faqs: expandedFaqs,
