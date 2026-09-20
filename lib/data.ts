@@ -117,7 +117,7 @@ export function getLocationBySlug(slug: string): LocationData | undefined {
   return locations.find((loc) => loc.slug === slug);
 }
 
-tr: export function getRelatedLocations(currentState: string, currentSlug: string, limit = 5): LocationData[] {
+export function getRelatedLocations(currentState: string, currentSlug: string, limit = 5): LocationData[] {
   const locations = getAllLocations();
   return locations
     .filter((loc) => loc.state === currentState && loc.slug !== currentSlug)
