@@ -49,7 +49,7 @@ export default async function ShippingPage({ params }: PageProps) {
 
   const relatedLocations = getRelatedLocations(location.state, location.slug);
 
-  const schemaData = {
+  const serviceSchema = {
     '@context': 'https://schema.org',
     '@type': 'Service',
     'serviceType': 'Car Shipping and Vehicle Transport',
@@ -64,11 +64,28 @@ export default async function ShippingPage({ params }: PageProps) {
     'description': `Secure vehicle transport services originating from ${location.origin}, ${location.state}. Rates from $${location.baseRate}.`,
   };
 
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    'mainEntity': location.faqs.map((faq) => ({
+      '@type': 'Question',
+      'name': faq.question,
+      'acceptedAnswer': {
+        '@type': 'Answer',
+        'text': faq.answer,
+      },
+    })),
+  };
+
   return (
     <main className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
       <div className="max-w-4xl mx-auto">
         <nav className="text-sm text-gray-500 mb-6">
@@ -104,6 +121,20 @@ export default async function ShippingPage({ params }: PageProps) {
             Calculate Quote for {location.origin}
           </button>
         </div>
+
+        <section className="bg-white border border-gray-200 rounded-xl p-6 mb-8 shadow-sm">
+          <h2 className="text-xl font-bold text-gray-900 mb-4">
+            Frequently Asked Questions about {location.origin} Shipping
+          </h2>
+          <div className="space-y-6">
+            {location.faqs.map((faq, idx) => (
+              <div key={idx} className="border-b border-gray-100 pb-4 last:border-0 last:pb-0">
+                <h3 className="text-base font-semibold text-gray-900 mb-1">{faq.question}</h3>
+                <p className="text-sm text-gray-700">{faq.answer}</p>
+              </div>
+            ))}
+          </div>
+        </section>
 
         <section className="bg-white border border-gray-200 rounded-xl p-6 mb-8 shadow-sm">
           <h2 className="text-xl font-bold text-gray-900 mb-4">

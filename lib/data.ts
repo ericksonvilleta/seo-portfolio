@@ -1,3 +1,8 @@
+export interface FAQ {
+  question: string;
+  answer: string;
+}
+
 export interface LocationData {
   slug: string;
   origin: string;
@@ -6,6 +11,7 @@ export interface LocationData {
   corridor: string;
   baseRate: number;
   leadTime: string;
+  faqs: FAQ[];
 }
 
 const states = [
@@ -28,14 +34,34 @@ export function getAllLocations(): LocationData[] {
   states.forEach((state) => {
     baseCities.forEach((city, index) => {
       const slug = `${city.name.toLowerCase().replace(/\s+/g, '-')}-to-miami`;
+      const baseRateVal = 950 + (index * 75);
+      const leadTimeVal = '24–48 Hours';
+      const originName = `${state.name} ${city.name}`;
+      
+      const faqs: FAQ[] = [
+        {
+          question: `How much does it cost to ship a car from ${originName} to Miami?`,
+          answer: `Transport rates from ${originName} start at around $${baseRateVal}, depending on vehicle size, seasonality, and transport type.`
+        },
+        {
+          question: `What is the typical transit and dispatch time from ${originName}?`,
+          answer: `Carrier dispatch for routes along the ${state.corridor} typically takes ${leadTimeVal}.`
+        },
+        {
+          question: `Is insurance included when shipping from ${state.name}?`,
+          answer: `Yes, all vehicle transport services originating from ${state.name} include full cargo insurance coverage from pickup to delivery.`
+        }
+      ];
+
       locations.push({
         slug: `${state.name.toLowerCase().replace(/\s+/g, '-')}-${slug}`,
-        origin: `${state.name} ${city.name}`,
+        origin: originName,
         state: state.name,
         population: city.pop + index * 1000,
         corridor: state.corridor,
-        baseRate: 950 + (index * 75),
-        leadTime: '24–48 Hours',
+        baseRate: baseRateVal,
+        leadTime: leadTimeVal,
+        faqs,
       });
     });
   });
@@ -43,12 +69,32 @@ export function getAllLocations(): LocationData[] {
   const expandedLocations: LocationData[] = [];
   for (let i = 0; i < 75; i++) {
     locations.forEach((loc, idx) => {
+      const newRate = 900 + ((i + idx) % 350);
+      const newLead = i % 2 === 0 ? '12–24 Hours' : '24–48 Hours';
+      const expandedSlug = `${loc.slug}-${i}`;
+      
+      const expandedFaqs: FAQ[] = [
+        {
+          question: `How much does it cost to ship a car from ${loc.origin} (Route #${i})?`,
+          answer: `Baseline rates for this specific route start at $${newRate} with full carrier protection.`
+        },
+        {
+          question: `What is the estimated dispatch window for ${loc.origin}?`,
+          answer: `Carriers along the ${loc.corridor} corridor are normally dispatched within ${newLead}.`
+        },
+        {
+          question: `Do you provide door-to-door transport in ${loc.state}?`,
+          answer: `Yes, we offer direct door-to-door vehicle pickup and delivery across all local districts in ${loc.state}.`
+        }
+      ];
+
       expandedLocations.push({
         ...loc,
-        slug: `${loc.slug}-${i}`,
+        slug: expandedSlug,
         population: loc.population + i * 123,
-        baseRate: 900 + ((i + idx) % 350),
-        leadTime: i % 2 === 0 ? '12–24 Hours' : '24–48 Hours',
+        baseRate: newRate,
+        leadTime: newLead,
+        faqs: expandedFaqs,
       });
     });
   }
