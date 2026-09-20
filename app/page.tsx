@@ -2,6 +2,7 @@ import { getAllLocations, getLocationBySlug, getRelatedLocations } from '@/lib/d
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import Link from 'next/link';
+import RouteVisualizer from '@/components/RouteVisualizer';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -78,6 +79,13 @@ export default async function ShippingPage({ params }: PageProps) {
           Car Shipping from {location.origin}, {location.state}
         </h1>
 
+        <RouteVisualizer
+          origin={location.origin}
+          state={location.state}
+          corridor={location.corridor}
+          baseRate={location.baseRate}
+        />
+
         <p className="text-lg text-gray-700 leading-relaxed mb-8">
           If you need secure and dependable vehicle transport originating from <strong className="text-gray-900">{location.origin}</strong> in <strong className="text-gray-900">{location.state}</strong> (serving an estimated population of {location.population.toLocaleString()}), we provide direct nationwide coverage utilizing major corridors like {location.corridor} with standard dispatch times of {location.leadTime}.
         </p>
@@ -101,11 +109,9 @@ export default async function ShippingPage({ params }: PageProps) {
           <h2 className="text-xl font-bold text-gray-900 mb-4">
             Why Choose Our {location.origin} Transport Service?
           </h2>
-          <ul className="list-disc list-inside space-y-2 text-gray-700">
-            <li>Licensed and bonded carriers operating directly out of {location.state}.</li>
-            <li>Transparent baseline pricing starting at ${location.baseRate} with no hidden terminal fees.</li>
-            <li>Dedicated support team monitoring your vehicle from pickup to drop-off.</li>
-          </ul>
+          <p className="text-gray-700 mb-2">Licensed and bonded carriers operating directly out of {location.state}.</p>
+          <p className="text-gray-700 mb-2">Transparent baseline pricing starting at ${location.baseRate} with no hidden terminal fees.</p>
+          <p className="text-gray-700">Dedicated support team monitoring your vehicle from pickup to drop-off.</p>
         </section>
 
         {relatedLocations.length > 0 && (
@@ -113,18 +119,17 @@ export default async function ShippingPage({ params }: PageProps) {
             <h2 className="text-xl font-bold text-gray-900 mb-4">
               More Shipping Routes in {location.state}
             </h2>
-            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {relatedLocations.map((rel) => (
-                <li key={rel.slug}>
-                  <Link
-                    href={`/shipping/${rel.slug}`}
-                    className="text-blue-600 hover:text-blue-800 hover:underline text-sm block p-2 bg-gray-50 rounded border border-gray-100"
-                  >
-                    Car Shipping from {rel.origin} &rarr;
-                  </Link>
-                </li>
+                <Link
+                  key={rel.slug}
+                  href={`/shipping/${rel.slug}`}
+                  className="text-blue-600 hover:text-blue-800 hover:underline text-sm block p-2 bg-gray-50 rounded border border-gray-100"
+                >
+                  Car Shipping from {rel.origin} &rarr;
+                </Link>
               ))}
-            </ul>
+            </div>
           </section>
         )}
       </div>
