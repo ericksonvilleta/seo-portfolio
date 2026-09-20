@@ -33,7 +33,9 @@ export function getAllLocations(): LocationData[] {
   
   states.forEach((state) => {
     baseCities.forEach((city, index) => {
-      const slug = `${city.name.toLowerCase().replace(/\s+/g, '-')}-to-miami`;
+      const citySlug = city.name.toLowerCase().replace(/\s+/g, '-');
+      const stateSlug = state.name.toLowerCase().replace(/\s+/g, '-');
+      const slug = `${stateSlug}-${citySlug}-to-miami`;
       const baseRateVal = 950 + (index * 75);
       const leadTimeVal = '24–48 Hours';
       const originName = `${state.name} ${city.name}`;
@@ -54,7 +56,7 @@ export function getAllLocations(): LocationData[] {
       ];
 
       locations.push({
-        slug: `${state.name.toLowerCase().replace(/\s+/g, '-')}-${slug}`,
+        slug,
         origin: originName,
         state: state.name,
         population: city.pop + index * 1000,
