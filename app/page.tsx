@@ -1,6 +1,7 @@
-import { getAllLocations, getLocationBySlug } from '@/lib/data';
+import { getAllLocations, getLocationBySlug, getRelatedLocations } from '@/lib/data';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
+import Link from 'next/link';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -44,6 +45,8 @@ export default async function ShippingPage({ params }: PageProps) {
   if (!location) {
     notFound();
   }
+
+  const relatedLocations = getRelatedLocations(location.state, location.slug);
 
   const schemaData = {
     '@context': 'https://schema.org',
@@ -89,7 +92,7 @@ export default async function ShippingPage({ params }: PageProps) {
           </button>
         </div>
 
-        <section className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+        <section className="bg-white border border-gray-200 rounded-xl p-6 mb-8 shadow-sm">
           <h2 className="text-xl font-bold text-gray-900 mb-4">
             Why Choose Our {location.origin} Transport Service?
           </h2>
@@ -99,6 +102,26 @@ export default async function ShippingPage({ params }: PageProps) {
             <li>Dedicated support team monitoring your vehicle from pickup to drop-off.</li>
           </ul>
         </section>
+
+        {relatedLocations.length > 0 && (
+          <section className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+            <h2 className="text-xl font-bold text-gray-900 mb-4">
+              More Shipping Routes in {location.state}
+            </h2>
+            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {relatedLocations.map((rel) => (
+                <li key={rel.slug}>
+                  <Link
+                    href={`/shipping/${rel.slug}`}
+                    className="text-blue-600 hover:text-blue-800 hover:underline text-sm block p-2 bg-gray-50 rounded border border-gray-100"
+                  >
+                    Car Shipping from {rel.origin} &rarr;
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
       </div>
     </main>
   );
