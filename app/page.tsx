@@ -1,19 +1,14 @@
-export const dynamic = 'force-dynamic';
-import { getAllLocations, getLocationBySlug, getRelatedLocations } from '@/lib/data';
+import { getLocationBySlug, getRelatedLocations } from '@/lib/data';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import RouteVisualizer from '@/components/RouteVisualizer';
 
+export const dynamic = 'force-dynamic';
+export const dynamicParams = true;
+
 interface PageProps {
   params: Promise<{ slug: string }>;
-}
-
-export async function generateStaticParams() {
-  const locations = getAllLocations();
-  return locations.map((loc) => ({
-    slug: loc.slug,
-  }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -26,8 +21,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     };
   }
 
-  const title = `Car Shipping from ${location.origin}, ${location.state} - From $${location.baseRate}`;
-  const description = `Looking for vehicle transport from ${location.origin}, ${location.state}? Rates starting at $${location.baseRate} with dispatch in ${location.leadTime}. Serving population of ${location.population.toLocaleString()} via ${location.corridor}.`;
+  const title = `Car Shipping from ${location.origin} - From $${location.baseRate}`;
+  const description = `Looking for vehicle transport from ${location.origin}? Rates starting at $${location.baseRate} with dispatch in ${location.leadTime}. Serving population of ${location.population.toLocaleString()} via ${location.corridor}.`;
 
   return {
     title,
@@ -59,10 +54,10 @@ export default async function ShippingPage({ params }: PageProps) {
       'name': `Nationwide Auto Transport - ${location.origin}`,
       'areaServed': {
         '@type': 'AdministrativeArea',
-        'name': `${location.origin}, ${location.state}`,
+        'name': `${location.origin}`,
       },
     },
-    'description': `Secure vehicle transport services originating from ${location.origin}, ${location.state}. Rates from $${location.baseRate}.`,
+    'description': `Secure vehicle transport services originating from ${location.origin}. Rates from $${location.baseRate}.`,
   };
 
   const faqSchema = {
@@ -94,7 +89,7 @@ export default async function ShippingPage({ params }: PageProps) {
         </nav>
         
         <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight mb-6">
-          Car Shipping from {location.origin}, {location.state}
+          Car Shipping from {location.origin}
         </h1>
 
         <RouteVisualizer
@@ -105,7 +100,7 @@ export default async function ShippingPage({ params }: PageProps) {
         />
 
         <p className="text-lg text-gray-700 leading-relaxed mb-8">
-          If you need secure and dependable vehicle transport originating from <strong className="text-gray-900">{location.origin}</strong> in <strong className="text-gray-900">{location.state}</strong> (serving an estimated population of {location.population.toLocaleString()}), we provide direct nationwide coverage utilizing major corridors like {location.corridor} with standard dispatch times of {location.leadTime}.
+          If you need secure and dependable vehicle transport originating from <strong className="text-gray-900">{location.origin}</strong> (serving an estimated population of {location.population.toLocaleString()}), we provide direct nationwide coverage utilizing major corridors like {location.corridor} with standard dispatch times of {location.leadTime}.
         </p>
 
         <div className="bg-blue-50 border border-blue-100 rounded-xl p-6 mb-8 shadow-sm">
@@ -139,9 +134,9 @@ export default async function ShippingPage({ params }: PageProps) {
 
         <section className="bg-white border border-gray-200 rounded-xl p-6 mb-8 shadow-sm">
           <h2 className="text-xl font-bold text-gray-900 mb-4">
-            Why Choose Our {location.origin} Transport Service?
+            Why Choose Our Transport Service?
           </h2>
-          <p className="text-gray-700 mb-2">Licensed and bonded carriers operating directly out of {location.state}.</p>
+          <p className="text-gray-700 mb-2">Licensed and bonded carriers operating directly out of the region.</p>
           <p className="text-gray-700 mb-2">Transparent baseline pricing starting at ${location.baseRate} with no hidden terminal fees.</p>
           <p className="text-gray-700">Dedicated support team monitoring your vehicle from pickup to drop-off.</p>
         </section>
@@ -168,4 +163,3 @@ export default async function ShippingPage({ params }: PageProps) {
     </main>
   );
 }
-export const dynamicParams = true; // Allows routes not pre-rendered at build time to be generated on-demand
