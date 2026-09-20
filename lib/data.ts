@@ -4,9 +4,10 @@ export interface LocationData {
   state: string;
   population: number;
   corridor: string;
+  baseRate: number;
+  leadTime: string;
 }
 
-// Mock dataset generator representing 1,200+ programmatic SEO pages
 const states = [
   { name: 'California', abbr: 'CA', corridor: 'Interstate 5' },
   { name: 'Texas', abbr: 'TX', corridor: 'Interstate 35' },
@@ -33,18 +34,21 @@ export function getAllLocations(): LocationData[] {
         state: state.name,
         population: city.pop + index * 1000,
         corridor: state.corridor,
+        baseRate: 950 + (index * 75),
+        leadTime: '24–48 Hours',
       });
     });
   });
 
-  // Expand to simulate 1,200+ pages for portfolio demonstration
   const expandedLocations: LocationData[] = [];
   for (let i = 0; i < 75; i++) {
-    locations.forEach((loc) => {
+    locations.forEach((loc, idx) => {
       expandedLocations.push({
         ...loc,
         slug: `${loc.slug}-${i}`,
         population: loc.population + i * 123,
+        baseRate: 900 + ((i + idx) % 350),
+        leadTime: i % 2 === 0 ? '12–24 Hours' : '24–48 Hours',
       });
     });
   }

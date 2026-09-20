@@ -24,8 +24,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     };
   }
 
-  const title = `Car Shipping from ${location.origin}, ${location.state}`;
-  const description = `Need secure and dependable vehicle transport originating from ${location.origin} in ${location.state} (serving an estimated population of ${location.population.toLocaleString()}), we provide direct nationwide coverage utilizing major corridors like ${location.corridor}.`;
+  const title = `Car Shipping from ${location.origin}, ${location.state} - From $${location.baseRate}`;
+  const description = `Looking for vehicle transport from ${location.origin}, ${location.state}? Rates starting at $${location.baseRate} with dispatch in ${location.leadTime}. Serving population of ${location.population.toLocaleString()} via ${location.corridor}.`;
 
   return {
     title,
@@ -60,7 +60,7 @@ export default async function ShippingPage({ params }: PageProps) {
         'name': `${location.origin}, ${location.state}`,
       },
     },
-    'description': `Secure and dependable vehicle transport services originating from ${location.origin}, ${location.state}.`,
+    'description': `Secure vehicle transport services originating from ${location.origin}, ${location.state}. Rates from $${location.baseRate}.`,
   };
 
   return (
@@ -79,13 +79,18 @@ export default async function ShippingPage({ params }: PageProps) {
         </h1>
 
         <p className="text-lg text-gray-700 leading-relaxed mb-8">
-          If you need secure and dependable vehicle transport originating from <strong className="text-gray-900">{location.origin}</strong> in <strong className="text-gray-900">{location.state}</strong> (serving an estimated population of {location.population.toLocaleString()}), we provide direct nationwide coverage utilizing major corridors like {location.corridor}.
+          If you need secure and dependable vehicle transport originating from <strong className="text-gray-900">{location.origin}</strong> in <strong className="text-gray-900">{location.state}</strong> (serving an estimated population of {location.population.toLocaleString()}), we provide direct nationwide coverage utilizing major corridors like {location.corridor} with standard dispatch times of {location.leadTime}.
         </p>
 
         <div className="bg-blue-50 border border-blue-100 rounded-xl p-6 mb-8 shadow-sm">
-          <h2 className="text-xl font-semibold text-blue-900 mb-3">Instant Route Estimate</h2>
+          <div className="flex justify-between items-center mb-3">
+            <h2 className="text-xl font-semibold text-blue-900">Instant Route Estimate</h2>
+            <span className="bg-blue-600 text-white text-sm font-bold px-3 py-1 rounded-full">
+              Rates from ${location.baseRate}
+            </span>
+          </div>
           <p className="text-blue-800 text-sm mb-4">
-            Transporting your vehicle from {location.origin} includes full carrier insurance, real-time satellite tracking, and zero upfront deposit.
+            Transporting your vehicle from {location.origin} includes full carrier insurance, real-time satellite tracking, and zero upfront deposit. Typical carrier dispatch: {location.leadTime}.
           </p>
           <button className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-5 py-2.5 rounded-lg transition-colors shadow-sm">
             Calculate Quote for {location.origin}
@@ -98,7 +103,7 @@ export default async function ShippingPage({ params }: PageProps) {
           </h2>
           <ul className="list-disc list-inside space-y-2 text-gray-700">
             <li>Licensed and bonded carriers operating directly out of {location.state}.</li>
-            <li>Transparent pricing with no hidden terminal fees.</li>
+            <li>Transparent baseline pricing starting at ${location.baseRate} with no hidden terminal fees.</li>
             <li>Dedicated support team monitoring your vehicle from pickup to drop-off.</li>
           </ul>
         </section>
